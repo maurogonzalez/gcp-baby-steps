@@ -1,0 +1,113 @@
+resources:
+- name: dc-2-ms-ds-n1
+  type: compute.v1.instance
+  properties:
+    zone: us-west1-c
+    machineType: zones/us-west1-c/machineTypes/n1-standard-1
+    tags: 
+      items:
+      - edgems
+    disks:
+    - deviceName: boot
+      type: PERSISTENT
+      boot: true
+      autoDelete: true
+      diskSizeGb: 50
+      initializeParams:
+        sourceImage: projects/centos-cloud/global/images/centos-7-v20180104
+    networkInterfaces:
+    - network: $(ref.edge-network.selfLink)
+      subnetwork: $(ref.edge-subnetwork-west.selfLink)
+      networkIP: 10.0.0.6
+      accessConfigs:
+        - 
+          type: ONE_TO_ONE_NAT
+
+- name: dc-2-ds-n2
+  type: compute.v1.instance
+  properties:
+    zone: us-west1-c
+    machineType: zones/us-west1-c/machineTypes/n1-standard-1
+    tags:
+      items:
+      - router
+    disks:
+    - deviceName: boot
+      type: PERSISTENT
+      boot: true
+      autoDelete: true
+      diskSizeGb: 50
+      initializeParams:
+        sourceImage: projects/centos-cloud/global/images/centos-7-v20180104
+    networkInterfaces:
+    - network: $(ref.edge-network.selfLink)
+      subnetwork: $(ref.edge-subnetwork-west.selfLink)
+      networkIP: 10.0.0.7
+      accessConfigs:
+        - 
+          type: ONE_TO_ONE_NAT
+
+- name: dc-2-ds-n3
+  type: compute.v1.instance
+  properties:
+    zone: us-west1-c
+    machineType: zones/us-west1-c/machineTypes/n1-standard-1
+    tags:
+      items:
+      - router
+    disks:
+    - deviceName: boot
+      type: PERSISTENT
+      boot: true
+      autoDelete: true
+      diskSizeGb: 50
+      initializeParams:
+        sourceImage: projects/centos-cloud/global/images/centos-7-v20180104
+    networkInterfaces:
+    - network: $(ref.edge-network.selfLink)
+      subnetwork: $(ref.edge-subnetwork-west.selfLink)
+      networkIP: 10.0.0.8
+      accessConfigs:
+        - 
+          type: ONE_TO_ONE_NAT
+- name: dc-2-sax-n4
+  type: compute.v1.instance
+  properties:
+    zone: us-east1-c
+    machineType: zones/us-east1-c/machineTypes/n1-standard-1
+    disks:
+    - deviceName: boot
+      type: PERSISTENT
+      boot: true
+      autoDelete: true
+      diskSizeGb: 50
+      initializeParams:
+        sourceImage: projects/centos-cloud/global/images/centos-7-v20180104
+    networkInterfaces:
+    - network: $(ref.edge-network.selfLink)
+      subnetwork: $(ref.edge-subnetwork-east.selfLink)
+      networkIP: 10.1.0.5
+      accessConfigs:
+        - 
+          type: ONE_TO_ONE_NAT
+
+- name: dc-2-sax-n5
+  type: compute.v1.instance
+  properties:
+    zone: us-east1-c
+    machineType: zones/us-east1-c/machineTypes/n1-standard-1
+    disks:
+    - deviceName: boot
+      type: PERSISTENT
+      boot: true
+      autoDelete: true
+      diskSizeGb: 50
+      initializeParams:
+        sourceImage: projects/centos-cloud/global/images/centos-7-v20180104
+    networkInterfaces:
+    - network: $(ref.edge-network.selfLink)
+      subnetwork: $(ref.edge-subnetwork-east.selfLink)
+      networkIP: 10.1.0.6
+      accessConfigs:
+        - 
+          type: ONE_TO_ONE_NAT

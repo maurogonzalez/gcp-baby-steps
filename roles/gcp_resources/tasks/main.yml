@@ -1,0 +1,2 @@
+- name: Update GCP Edge resources
+  command: gcloud deployment-manager deployments {{ cmd | default('update') }} edge-resources --config {{ playbook_dir }}/roles/gcp_resources/templates/config.yml

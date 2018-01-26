@@ -1,0 +1,46 @@
+resources:
+- name: logger
+  type: compute.v1.instance
+  properties:
+    zone: us-central1-c
+    machineType: zones/us-central1-c/machineTypes/f1-micro
+    tags: 
+      items:
+      - logger
+    disks:
+    - deviceName: boot
+      type: PERSISTENT
+      boot: true
+      autoDelete: true
+      diskSizeGb: 10
+      initializeParams:
+        sourceImage: projects/debian-cloud/global/images/debian-9-stretch-v20180105
+    networkInterfaces:
+    - network: $(ref.edge-network.selfLink)
+      subnetwork: $(ref.edge-subnetwork-central.selfLink)
+      networkIP: 10.2.0.2
+      accessConfigs:
+        - natIP: $(ref.logger-address.address)
+
+- name: splunk
+  type: compute.v1.instance
+  properties:
+    zone: us-central1-c
+    machineType: zones/us-central1-c/machineTypes/f1-micro
+    tags: 
+      items:
+      - logger
+    disks:
+    - deviceName: boot
+      type: PERSISTENT
+      boot: true
+      autoDelete: true
+      diskSizeGb: 10
+      initializeParams:
+        sourceImage: projects/centos-cloud/global/images/centos-7-v20180104
+    networkInterfaces:
+    - network: $(ref.edge-network.selfLink)
+      subnetwork: $(ref.edge-subnetwork-central.selfLink)
+      networkIP: 10.2.0.3
+      accessConfigs:
+        - type: ONE_TO_ONE_NAT

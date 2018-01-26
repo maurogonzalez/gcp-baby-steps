@@ -1,0 +1,6 @@
+- include_tasks: config.yml
+  when: cmd == "config"
+
+- include_tasks: start.yml
+  when: cmd == "start"
+

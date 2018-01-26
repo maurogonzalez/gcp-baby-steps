@@ -1,0 +1,8 @@
+ssh_user: xxxxx
+ssh_private_key: xxxxxx
+bastion_private_key: "{{ ssh_private_key }}"
+bastion_user: xxxxxx
+bastion_host: xxxxx
+centos_img: projects/centos-cloud/global/images/centos-7-v20180104
+debian_img: projects/debian-cloud/global/images/debian-9-stretch-v20180105
+

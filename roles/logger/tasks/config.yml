@@ -1,0 +1,39 @@
+- name: Install dependencies
+  become: yes
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items:    
+    - syslog-ng
+    - unzip
+
+- name: Unzip ngrok
+  become: yes
+  unarchive:
+    src: https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
+    dest: /usr/bin
+    remote_src: yes
+    mode: 0755
+
+- name: Copy syslog config file
+  become: yes
+  copy:
+    src: "{{ playbook_dir }}/roles/logger/templates/syslog_edge.conf"
+    dest: /etc/syslog-ng/conf.d/edge.conf
+    owner: root 
+    group: root
+
+- name: Copy ngrok config file
+  become: yes
+  template:
+    src: ngrok.yml.j2
+    dest: /opt/ngrok.yml
+    owner: root 
+    group: root
+
+- name: Restart syslog-ng
+  become: yes
+  service:
+    name: syslog-ng
+    enabled: yes
+    state: restarted

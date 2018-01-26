@@ -1,0 +1,103 @@
+resources:
+- name: edge-network
+  type: compute.v1.network
+  properties:
+    autoCreateSubnetworks: false
+    routingConfig:
+      routingMode: REGIONAL
+
+- name: bastion-address
+  type: compute.v1.address
+  properties:
+    region: us-west1
+    addressType: EXTERNAL
+
+- name: logger-address
+  type: compute.v1.address
+  properties:
+    region: us-central1
+    addressType: EXTERNAL
+
+- name: edge-firewall-rule
+  type: compute.v1.firewall
+  properties:
+    priority: 65534
+    sourceRanges: [{% for k, v in properties['cidrs'].items() %}{{ v }}{{ "," if not loop.last }}{% endfor %}]
+    allowed:
+    - IPProtocol: tcp
+      ports: [{%for p in properties['internal-ports'] %}{{ p }}{{ "," if not loop.last }}{% endfor %}]
+    network: $(ref.edge-network.selfLink)
+
+- name: router-firewall-rule
+  type: compute.v1.firewall
+  properties:
+    priority: 1000
+    sourceRanges:
+    - "0.0.0.0/0"
+    targetTags:
+    - router
+    allowed:
+    - IPProtocol: tcp
+      ports: [{%for p in properties['gateway-external-ports'] %}{{ p }}{{ "," if not loop.last }}{% endfor %}]
+    network: $(ref.edge-network.selfLink)
+
+- name: edgems-firewall-rule
+  type: compute.v1.firewall
+  properties:
+    priority: 1000
+    sourceRanges:
+    - "0.0.0.0/0"
+    targetTags:
+    - edgems
+    allowed:
+    - IPProtocol: tcp
+      ports: [{%for p in properties['ms-external-ports'] %}{{ p }}{{ "," if not loop.last }}{% endfor %}]
+    network: $(ref.edge-network.selfLink)
+
+- name: bastion-firewall-rule
+  type: compute.v1.firewall
+  properties:
+    priority: 65534
+    targetTags:
+    - bastion
+    sourceRanges:
+    - 0.0.0.0/0
+    allowed:
+    - IPProtocol: tcp
+      ports:      
+      - "22"
+    network: $(ref.edge-network.selfLink)
+
+- name: logger-firewall-rule
+  type: compute.v1.firewall
+  properties:
+    priority: 65534
+    targetTags:
+    - logger
+    sourceRanges:
+    - 0.0.0.0/0
+    allowed:
+    - IPProtocol: tcp
+      ports: [{%for p in properties['logger-external-ports'] %}{{ p }}{{ "," if not loop.last }}{% endfor %}]
+    network: $(ref.edge-network.selfLink)
+
+- name: edge-subnetwork-west
+  type: compute.v1.subnetwork
+  properties:
+    ipCidrRange: {{ properties['cidrs']['west'] }}
+    region: us-west1
+    network: $(ref.edge-network.selfLink)
+
+- name: edge-subnetwork-east
+  type: compute.v1.subnetwork
+  properties:
+    ipCidrRange: {{ properties['cidrs']['east'] }}
+    region: us-east1
+    network: $(ref.edge-network.selfLink)
+
+- name: edge-subnetwork-central
+  type: compute.v1.subnetwork
+  properties:
+    ipCidrRange: {{ properties['cidrs']['central'] }}
+    region: us-central1
+    network: $(ref.edge-network.selfLink)

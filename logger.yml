@@ -1,0 +1,3 @@
+- hosts: loggers[{{ log_index }}]
+  roles:
+    - "{{ log_role }}"

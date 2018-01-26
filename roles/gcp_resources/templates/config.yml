@@ -1,0 +1,55 @@
+imports:
+- path: network.jinja
+  name: nw.jinja
+- path: edge-groups.jinja
+  name: gs.jinja
+- path: bastion.jinja
+  name: bs.jinja
+- path: edge-instances-1.jinja
+  name: is.jinja
+- path: edge-instances-2.jinja
+  name: is2.jinja
+- path: logger.jinja
+  name: lg.jinja
+
+resources:
+- name: edge-network-resources
+  type: nw.jinja
+  properties:
+    internal-ports:
+      - "22"
+      - "1024-9999" 
+      - "10389"
+    gateway-external-ports:
+      - "15999"
+      - "9001" 
+      - "9443"
+    ms-external-ports:
+      - "8080"
+      - "8443"
+      - "9000"
+      - "9443"
+    logger-external-ports:
+      - "10000-19549"
+      - "4040"
+      - "8000"
+      - "9997"
+    cidrs: 
+      west: 10.0.0.0/16
+      east: 10.1.0.0/16
+      central: 10.2.0.0/16
+
+- name: edge-groups-resources
+  type: gs.jinja
+
+- name: bastion-resources
+  type: bs.jinja
+
+- name: edge-instances-resources-dc-1
+  type: is.jinja
+
+- name: edge-instances-resources-dc-2
+  type: is2.jinja
+
+- name: edge-logger-instance
+  type: lg.jinja

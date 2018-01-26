@@ -1,0 +1,23 @@
+resources:
+- name: bastion
+  type: compute.v1.instance
+  properties:
+    zone: us-west1-c
+    machineType: zones/us-west1-c/machineTypes/f1-micro
+    tags: 
+      items:
+      - bastion
+    disks:
+    - deviceName: boot
+      type: PERSISTENT
+      boot: true
+      autoDelete: true
+      diskSizeGb: 10
+      initializeParams:
+        sourceImage: projects/centos-cloud/global/images/centos-7-v20180104
+    networkInterfaces:
+    - network: $(ref.edge-network.selfLink)
+      subnetwork: $(ref.edge-subnetwork-west.selfLink)
+      networkIP: 10.0.0.2
+      accessConfigs:
+        - natIP: $(ref.bastion-address.address)      

@@ -1,0 +1,39 @@
+resources:
+- name: router-instance-group
+  type: compute.v1.instanceGroup
+  properties:
+    region: us-west1
+    zone: us-west1-c
+    network: $(ref.edge-network.selfLink)
+    namedPorts:
+      - 
+        name: http
+        port: 9001
+      - 
+        name: https
+        port: 9443
+
+- name: router-healthcheck
+  type: compute.v1.httpHealthCheck
+  properties:
+    port: 15999
+    requestPath: /v1/servers/self/reachable 
+
+- name: router-healthcheck-tls
+  type: compute.v1.httpsHealthCheck
+  properties:
+    port: 15999
+    requestPath: /v1/servers/self/reachable 
+
+- name: router-backendservice-tls
+  type: compute.v1.backendService
+  properties:
+    region: us-west1
+    loadBalancingScheme: EXTERNAL
+    portName: http
+    protocol: HTTP
+    backends:
+      - balancingMode: UTILIZATION
+        group: $(ref.router-instance-group.selfLink)
+    healthChecks:
+      - $(ref.router-healthcheck.selfLink)
